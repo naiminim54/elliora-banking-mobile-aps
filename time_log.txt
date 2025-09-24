@@ -1,0 +1,84 @@
+# time_log.txt - APS Mobile Flutter
+
+## Développement Application Mobile Flutter - APS Banking
+
+**Période** : Septembre 2024  
+**Projet** : Application mobile Flutter reproduisant les fonctionnalités de la version web
+
+---
+
+### Phase 1 : Architecture et Structure (2h)
+- **Setup projet Flutter** : Initialisation du projet, configuration pubspec.yaml avec les dépendances requises
+- **Structure des dossiers** : Création de l'arborescence selon le cahier des charges
+- **Architecture** : Définition de la séparation des responsabilités (API, Auth, Screens, Widgets, Utils)
+
+### Phase 2 : Utilitaires et Services Core (1.5h)
+- **FormatUtils** : Implémentation du formatage XAF avec intl, gestion dates
+- **ValidationUtils** : Validation des montants, comptes, champs de formulaire
+- **ApiClient** : Client HTTP avec gestion des tokens, headers, erreurs
+
+### Phase 3 : Authentification (1h)
+- **AuthService** : Gestion du token avec SharedPreferences, état de connexion
+- **LoginPage** : Interface de connexion avec validation et gestion d'erreurs
+
+### Phase 4 : Dashboard et Comptes (1.5h)
+- **AccountCard** : Widget carte de compte avec formatage XAF et actions
+- **DashboardPage** : Liste des comptes, gestion des états (loading, error, empty)
+- **Navigation** : Routing vers transactions et virements
+
+### Phase 5 : Transactions (2h)
+- **TransactionsList** : Widget complexe avec recherche, tri, filtres, pagination
+- **TransactionsPage** : Écran d'affichage des transactions
+- **Filtres avancés** : Date range picker, types de transaction, tri multiple
+
+### Phase 6 : Virements (1.5h)
+- **TransferPage** : Formulaire de virement avec validations en temps réel
+- **TransferConfirmDialog** : Modal de confirmation avec récapitulatif
+- **Intégration API** : Appel endpoint transfer avec gestion succès/erreur
+
+### Phase 7 : Interface et UX (1h)
+- **Theme** : Configuration Material Design 3, couleurs, styles
+- **Responsive** : Adaptation mobile, spacing, typography
+- **Animations** : Transitions natives Flutter, feedback utilisateur
+
+### Phase 8 : Tests Unitaires (1h)
+- **Tests validation** : Couverture complète des règles de validation
+- **Tests formatage** : Vérification formatage XAF et parsing montants
+- **Structure tests** : Organisation en groupes de tests logiques
+
+### Phase 9 : Main et Initialisation (0.5h)
+- **main.dart** : Configuration app, routing initial, vérification auth
+- **AuthWrapper** : Gestion navigation login/dashboard selon état
+- **Initialisation** : Setup services au démarrage
+
+### Phase 10 : Documentation et Finalisation (1h)
+- **README.md** : Documentation complète avec setup, API, structure
+- **time_log.txt** : Historique détaillé du développement
+- **Configuration** : Instructions de déploiement et configuration API
+
+---
+
+## Récapitulatif
+
+**Total temps développement** : ~12 heures
+
+### Répartition par composant :
+- **Interface utilisateur** : 4h (Dashboard, Login, Transactions, Virements)
+- **Services et API** : 3h (Auth, ApiClient, intégrations)
+- **Utils et formatage** : 1.5h (Validation, formatage XAF)
+- **Tests** : 1h (Tests unitaires validation et formatage)
+- **Configuration et docs** : 2.5h (Setup, README, structure)
+
+### Technologies maîtrisées :
+- Flutter SDK 3.9.2, Dart
+- Packages : http, intl, shared_preferences
+- Architecture : Separation of concerns, stateful widgets
+- Tests : flutter_test framework
+- API REST : Intégration endpoints JSON
+
+### Conformité cahier des charges :
+✅ Reproduction fidèle des fonctionnalités web  
+✅ Mêmes endpoints et validations  
+✅ Interface mobile optimisée  
+✅ Tests unitaires complets  
+✅ Documentation technique complète
