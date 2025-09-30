@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../widgets/credit_card_widget.dart';
+import '../api/models.dart';
 
 /// Widget carte de compte - Wrapper vers CreditCardWidget
 class AccountCard extends StatelessWidget {
-  final Map<String, dynamic> account;
+  final Account account;
   final VoidCallback? onViewTransactions;
   final VoidCallback? onTransfer;
 

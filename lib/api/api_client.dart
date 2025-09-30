@@ -1,122 +1,89 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
+import 'models.dart';
 
-/// Fonctions utilitaires pour les appels API (GET/POST)
+/// Client API mocké utilisant des fixtures JSON
 class ApiClient {
-  // TODO: Adapter l'URL selon votre environnement de test
-  // En développement local, remplacer par votre URL de backend Next.js
-  static const String baseUrl = 'http://localhost:3000';
-
+  static const String baseUrl = 'https://api.mock.afric';
   static String? _token;
+
+  // Simule un délai réseau
+  static Future<void> _simulateNetworkDelay() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  // Charge un fichier fixture
+  static Future<dynamic> _loadFixture(String name) async {
+    await _simulateNetworkDelay();
+    final String response = await rootBundle.loadString(
+      'lib/api/fixtures/$name.json',
+    );
+    return json.decode(response);
+  }
 
   /// Définit le token d'authentification
   static void setToken(String? token) {
     _token = token;
   }
 
-  /// Headers par défaut
-  static Map<String, String> get _defaultHeaders => {
-    'Content-Type': 'application/json',
-    if (_token != null) 'Authorization': 'Bearer $_token',
-  };
-
-  /// Gère les réponses HTTP et les erreurs
-  static dynamic _handleResponse(http.Response response) {
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      if (response.body.isEmpty) return null;
-      return json.decode(response.body);
-    } else {
-      final errorBody = response.body.isNotEmpty
-          ? json.decode(response.body)
-          : {'message': 'Erreur inconnue'};
-
-      throw ApiException(
-        statusCode: response.statusCode,
-        message: errorBody['message'] ?? 'Erreur inconnue',
-      );
-    }
+  /// POST /auth/login
+  static Future<AuthResponse> login(String username, String password) async {
+    final json = await _loadFixture('auth_login');
+    setToken(json['token']);
+    return AuthResponse.fromJson(json);
   }
 
-  /// POST /api/auth/login
-  static Future<Map<String, dynamic>> login(
-    String username,
-    String password,
-  ) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/api/auth/login'),
-      headers: _defaultHeaders,
-      body: json.encode({'username': username, 'password': password}),
-    );
+  /// GET /accounts
+  static Future<List<Account>> getAccounts() async {
+    if (_token == null)
+      throw ApiException(statusCode: 401, message: 'Non authentifié');
 
-    return _handleResponse(response);
+    final List<dynamic> json = await _loadFixture('accounts');
+    return json.map((item) => Account.fromJson(item)).toList();
   }
 
-  /// GET /api/accounts
-  static Future<List<dynamic>> getAccounts() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/api/accounts'),
-      headers: _defaultHeaders,
-    );
-
-    return _handleResponse(response);
-  }
-
-  /// GET /api/accounts/:accountId/transactions
-  static Future<Map<String, dynamic>> getTransactions(
+  /// GET /accounts/:accountId/transactions
+  static Future<TransactionsResponse> getTransactions(
     String accountId, {
     int page = 1,
-    int pageSize = 10,
+    int pageSize = 20,
     String? search,
-    String? sortBy,
-    String? sortOrder,
-    String? type,
-    String? startDate,
-    String? endDate,
+    DateTime? startDate,
+    DateTime? endDate,
   }) async {
-    final queryParams = <String, String>{
-      'page': page.toString(),
-      'pageSize': pageSize.toString(),
-      if (search != null && search.isNotEmpty) 'search': search,
-      if (sortBy != null) 'sortBy': sortBy,
-      if (sortOrder != null) 'sortOrder': sortOrder,
-      if (type != null) 'type': type,
-      if (startDate != null) 'startDate': startDate,
-      if (endDate != null) 'endDate': endDate,
-    };
+    if (_token == null)
+      throw ApiException(statusCode: 401, message: 'Non authentifié');
 
-    final uri = Uri.parse(
-      '$baseUrl/api/accounts/$accountId/transactions',
-    ).replace(queryParameters: queryParams);
-
-    final response = await http.get(uri, headers: _defaultHeaders);
-
-    return _handleResponse(response);
+    final json = await _loadFixture('transactions');
+    return TransactionsResponse.fromJson(json);
   }
 
-  /// POST /api/transfer
-  static Future<Map<String, dynamic>> transfer({
+  /// POST /transfer
+  static Future<TransferResponse> transfer({
     required String fromAccountId,
     required String toAccountNumber,
-    required double amount,
-    String? description,
+    required int amount,
+    required String currency,
+    String? note,
   }) async {
-    final body = {
-      'fromAccountId': fromAccountId,
-      'toAccountNumber': toAccountNumber,
-      'amount': amount,
-    };
+    if (_token == null)
+      throw ApiException(statusCode: 401, message: 'Non authentifié');
 
-    if (description != null && description.isNotEmpty) {
-      body['description'] = description;
-    }
-
-    final response = await http.post(
-      Uri.parse('$baseUrl/api/transfer'),
-      headers: _defaultHeaders,
-      body: json.encode(body),
+    final request = TransferRequest(
+      fromAccountId: fromAccountId,
+      toAccountNumber: toAccountNumber,
+      amount: amount,
+      currency: currency,
+      note: note ?? '',
     );
 
-    return _handleResponse(response);
+    final json = await _loadFixture('transfer_response');
+    return TransferResponse.fromJson(json);
+  }
+
+  /// Déconnexion
+  static void logout() {
+    setToken(null);
   }
 }
 

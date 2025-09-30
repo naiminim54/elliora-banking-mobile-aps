@@ -3,10 +3,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_colors.dart';
 import '../utils/format.dart';
+import '../api/models.dart';
 
 /// Widget de carte de crédit reproduisant exactement le design Next.js
 class CreditCardWidget extends StatefulWidget {
-  final Map<String, dynamic> account;
+  final Account account;
   final VoidCallback? onViewTransactions;
   final VoidCallback? onTransfer;
 
@@ -66,10 +67,10 @@ class _CreditCardWidgetState extends State<CreditCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final balance = widget.account['balance']?.toDouble() ?? 0.0;
-    final currency = widget.account['currency'] ?? 'FCFA';
-    final accountType = widget.account['type'] ?? 'current';
-    final accountId = widget.account['id'] ?? '';
+    final balance = widget.account.balance.toDouble();
+    final currency = widget.account.currency;
+    final accountType = widget.account.type;
+    final accountId = widget.account.id;
 
     final maskedBalance = _isBalanceVisible
         ? FormatUtils.formatCurrency(balance, currency)

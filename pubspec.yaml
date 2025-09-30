@@ -1,5 +1,5 @@
 name: aps_mobile
-description: "A new Flutter project."
+description: "Elliora Banking for aps a test project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -72,7 +72,7 @@ flutter:
   # Assets pour reproduire le design Next.js
   assets:
     - assets/images/
-    - assets/icons/
+    - lib/api/fixtures/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

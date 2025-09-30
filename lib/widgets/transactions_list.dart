@@ -57,24 +57,19 @@ class _TransactionsListState extends State<TransactionsList> {
         search: _searchController.text.trim().isEmpty
             ? null
             : _searchController.text.trim(),
-        sortBy: _sortBy,
-        sortOrder: _sortOrder,
-        type: _filterType,
-        startDate: _startDate?.toIso8601String().split('T')[0],
-        endDate: _endDate?.toIso8601String().split('T')[0],
       );
 
       if (mounted) {
         setState(() {
           if (append) {
-            _transactions.addAll(response['items']);
+            _transactions.addAll(response.items);
             _currentPage++;
           } else {
-            _transactions = response['items'];
-            _currentPage = response['page'] ?? 1;
+            _transactions = response.items;
+            _currentPage = response.page;
           }
-          _totalPages = (response['total'] / _pageSize).ceil();
-          _totalItems = response['total'] ?? 0;
+          _totalPages = (response.total / _pageSize).ceil();
+          _totalItems = response.total;
           _isLoading = false;
         });
       }
@@ -176,7 +171,7 @@ class _TransactionsListState extends State<TransactionsList> {
                 // Tri
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _sortBy,
+                    initialValue: _sortBy,
                     decoration: const InputDecoration(
                       labelText: 'Tri',
                       border: OutlineInputBorder(),
@@ -198,7 +193,7 @@ class _TransactionsListState extends State<TransactionsList> {
                 // Ordre
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _sortOrder,
+                    initialValue: _sortOrder,
                     decoration: const InputDecoration(
                       labelText: 'Ordre',
                       border: OutlineInputBorder(),
@@ -224,7 +219,7 @@ class _TransactionsListState extends State<TransactionsList> {
                 // Type
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _filterType,
+                    initialValue: _filterType,
                     decoration: const InputDecoration(
                       labelText: 'Type',
                       border: OutlineInputBorder(),

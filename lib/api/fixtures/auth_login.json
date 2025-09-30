@@ -1,0 +1,8 @@
+{
+  "token": "ey.mock.token",
+  "user": {
+    "id": "u_1",
+    "name": "Alice T.",
+    "role": "user"
+  }
+}

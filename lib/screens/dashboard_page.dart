@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../api/api_client.dart';
+import '../api/models.dart';
 import '../auth/auth_service.dart';
 import '../auth/login_page.dart';
 import '../widgets/credit_card_widget.dart';
@@ -12,12 +13,11 @@ import '../screens/transfer_page.dart';
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
-  @override
   State<DashboardPage> createState() => _DashboardPageState();
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  List<dynamic> _accounts = [];
+  List<Account> _accounts = [];
   bool _isLoading = true;
   String? _error;
   String _currentView = 'dashboard';
@@ -127,6 +127,29 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildMainContent() {
+    // Pages spécifiques
+    if (_currentView == 'transactions' && _selectedAccountId != null) {
+      final selectedAccount = _accounts.firstWhere(
+        (account) => account.id == _selectedAccountId,
+        orElse: () => _accounts.first,
+      );
+
+      return TransactionsPage(
+        accountId: _selectedAccountId!,
+        onBack: _handleBackToDashboard,
+      );
+    }
+
+    if (_currentView == 'transfers') {
+      return TransferPage(
+        accounts: _accounts,
+        selectedAccountId: _selectedAccountId,
+        onBack: _handleBackToDashboard,
+        onSuccess: _handleBackToDashboard,
+      );
+    }
+
+    // Dashboard principal
     return Column(
       children: [
         // Top Bar Mobile
@@ -260,7 +283,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     isActive: _currentView == 'transactions',
                     onTap: () {
                       if (_accounts.isNotEmpty) {
-                        _handleViewTransactions(_accounts[0]['id']);
+                        _handleViewTransactions(_accounts[0].id);
                       }
                       Navigator.pop(context);
                     },
@@ -529,16 +552,14 @@ class _DashboardPageState extends State<DashboardPage> {
                 const SizedBox(height: 16),
 
                 // Cartes de crédit
-                ..._accounts
-                    .map(
-                      (account) => CreditCardWidget(
-                        account: account,
-                        onViewTransactions: () =>
-                            _handleViewTransactions(account['id']),
-                        onTransfer: () => _handleTransfer(account['id']),
-                      ),
-                    )
-                    .toList(),
+                ..._accounts.map(
+                  (account) => CreditCardWidget(
+                    account: account,
+                    onViewTransactions: () =>
+                        _handleViewTransactions(account.id),
+                    onTransfer: () => _handleTransfer(account.id),
+                  ),
+                ),
               ],
             ),
           ),

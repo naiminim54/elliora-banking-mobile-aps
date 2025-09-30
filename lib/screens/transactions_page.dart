@@ -23,8 +23,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
   List<dynamic> _transactions = [];
   bool _isLoading = true;
   String _searchQuery = '';
-  String _sortBy = 'date';
-  String _sortOrder = 'desc';
   int _currentPage = 1;
   final int _pageSize = 10;
 
@@ -43,13 +41,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
         page: _currentPage,
         pageSize: _pageSize,
         search: _searchQuery,
-        sortBy: _sortBy,
-        sortOrder: _sortOrder,
       );
 
       if (mounted) {
         setState(() {
-          _transactions = response['items'] ?? [];
+          _transactions = response.items;
           _isLoading = false;
         });
       }
@@ -142,8 +138,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 onPressed: () {
                   setState(() {
                     _searchQuery = '';
-                    _sortBy = 'date';
-                    _sortOrder = 'desc';
                     _currentPage = 1;
                   });
                   _loadTransactions();

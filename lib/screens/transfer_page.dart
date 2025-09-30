@@ -92,13 +92,13 @@ class _TransferPageState extends State<TransferPage> {
       final response = await ApiClient.transfer(
         fromAccountId: _fromAccountId!,
         toAccountNumber: _toAccountController.text.trim(),
-        amount: double.parse(_amountController.text),
-        description: _descriptionController.text.trim().isEmpty
-            ? null
-            : _descriptionController.text.trim(),
+        amount: (double.parse(_amountController.text) * 100)
+            .round(), // Convertir en centimes
+        currency: _fromAccount?['currency'] ?? 'XAF',
+        note: _descriptionController.text.trim(),
       );
 
-      _transferId = response['transferId'];
+      _transferId = response.transferId;
       setState(() {
         _step = 'success';
         _isLoading = false;
@@ -230,7 +230,7 @@ class _TransferPageState extends State<TransferPage> {
           const SizedBox(height: 12),
 
           DropdownButtonFormField<String>(
-            value: _fromAccountId,
+            initialValue: _fromAccountId,
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),

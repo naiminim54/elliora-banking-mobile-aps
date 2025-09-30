@@ -1,0 +1,23 @@
+{
+  "items": [
+    {
+      "id": "tx_1",
+      "date": "2025-07-12T09:22:00Z",
+      "amount": -25000,
+      "currency": "XAF",
+      "description": "Loyer Juillet",
+      "status": "posted"
+    },
+    {
+      "id": "tx_2",
+      "date": "2025-07-10T14:11:00Z",
+      "amount": 150000,
+      "currency": "XAF",
+      "description": "Salaire",
+      "status": "posted"
+    }
+  ],
+  "page": 1,
+  "pageSize": 20,
+  "total": 2
+}

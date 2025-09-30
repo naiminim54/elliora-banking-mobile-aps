@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../api/api_client.dart';
+import '../api/models.dart';
 
 /// Service d'authentification (login, gestion token)
 class AuthService {
@@ -20,22 +22,22 @@ class AuthService {
   }
 
   /// Récupère les données utilisateur stockées
-  static Future<Map<String, dynamic>?> getUserData() async {
+  static Future<User?> getUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final userDataStr = prefs.getString(_userKey);
     if (userDataStr != null) {
-      // En pratique, il faudrait parser du JSON ici
-      // Pour simplifier, on retourne des données par défaut
-      return {'id': '1', 'username': 'user', 'name': 'Utilisateur Test'};
+      try {
+        final userData = json.decode(userDataStr);
+        return User.fromJson(userData);
+      } catch (_) {
+        return null;
+      }
     }
     return null;
   }
 
   /// Connexion utilisateur
-  static Future<Map<String, dynamic>> login(
-    String username,
-    String password,
-  ) async {
+  static Future<AuthResponse> login(String username, String password) async {
     try {
       // Appel API de login
       final response = await ApiClient.login(username, password);
@@ -43,18 +45,15 @@ class AuthService {
       // Stockage du token et des données utilisateur
       final prefs = await SharedPreferences.getInstance();
 
-      final token = response['token'] as String?;
-      final user = response['user'] as Map<String, dynamic>?;
-
-      if (token != null) {
-        await prefs.setString(_tokenKey, token);
-        ApiClient.setToken(token);
-      }
-
-      if (user != null) {
-        // En pratique, il faudrait sérialiser en JSON
-        await prefs.setString(_userKey, user.toString());
-      }
+      await prefs.setString(_tokenKey, response.token);
+      await prefs.setString(
+        _userKey,
+        json.encode({
+          'id': response.user.id,
+          'name': response.user.name,
+          'role': response.user.role,
+        }),
+      );
 
       return response;
     } catch (e) {

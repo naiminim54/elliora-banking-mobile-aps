@@ -67,7 +67,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -80,8 +80,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
                   fit: BoxFit.contain,
                 ),
               ),
-              const SizedBox(height: 24),
-              const Text(
+              SizedBox(height: 24),
+              Text(
                 'Elliora Banking',
                 style: TextStyle(
                   fontSize: 24,
@@ -89,8 +89,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
                   fontFamily: 'Inter',
                 ),
               ),
-              const SizedBox(height: 24),
-              const CircularProgressIndicator(),
+              SizedBox(height: 24),
+              CircularProgressIndicator(),
             ],
           ),
         ),
